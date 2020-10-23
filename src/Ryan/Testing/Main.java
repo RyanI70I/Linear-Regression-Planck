@@ -9,7 +9,7 @@ public class Main {
     public static ArrayList<double[]> slopes = new ArrayList<double[]>();
 
     public static void main(String[] args) throws InterruptedException {
-        // write your code here
+        // This is the whole data fo the lab in case I ever want to find an line of best for a natural lob
 //        double[] Volts416 = {1.563, 1.627, 1.668, 1.708, 1.755, 1.781, 1.817, 1.861, 1.885, 1.914, 1.935, 1.948, 2.004, 2.026, 2.046, 2.081, 2.123, 2.189, 2.25, 2.303, 2.382, 2.458, 2.598, 2.663, 2.884, 3.109, 3.229, 3.464, 3.692};
 //        double[] Amps416 = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.14, 0.15, 0.16, 0.18, 0.2, 0.24, 0.27, 0.3, 0.35, 0.4, 0.5, 0.55, 0.72, 0.9, 1, 1.2, 1.4};
 //
@@ -36,10 +36,13 @@ public class Main {
         double[] uncert = new double[7];
         final double[] InvLambda = {(double)1/416, (double)1/501, (double)1/565, (double)1/590, (double)1/645,(double)1/875,(double)1/940};
 
+        // Fill uncert[n] with the +- uncertainty for the nth led
         for (int i = 0; i < ActVolt.length; i++) {
             uncert[i] = (ActVolt[i] *.03 + .002) +.1;
         }
 
+        // Actvolts[n][m] n corresponds to what LED it is (ie 416nm 501nm) m is filled with 10 possible values for
+        // the voltage of the LED based on the Uncertainty
         double[][] ActVolts = new double[7][10];
         for (int i = 0; i < ActVolt.length; i++) {
             for (int j = 0; j < 5; ) {
@@ -53,6 +56,8 @@ public class Main {
             }
         }
         SimpleRegression model = new SimpleRegression();
+        //This Finds every possible compination of errors and their slope
+        //and saves the min/max slope
 
         int count = 0;
         double max = -9999;
@@ -75,6 +80,7 @@ public class Main {
                                         model.addData(InvLambda[4], ActVolts[4][m]);
                                         model.addData(InvLambda[5], ActVolts[5][o]);
 //                                            model.addData(InvLambda[6], ActVolts[6][p]);
+                                        //This data point was an outlier so I left it out
                                         if(model.getSlope() > max) {
                                             max = model.getSlope();
                                         } else if(model.getSlope() < min) {
@@ -96,6 +102,7 @@ public class Main {
 //                                            System.out.println(InvLambda[6]);
 //                                            System.out.println();
 //                                            Thread.sleep(5000);
+                                        //Debugging stuff
                                         model.clear();
 
 //                                            slopes.add(new double[] {ActVolts[0][j], ActVolts[1][k], ActVolts[0][l], ActVolts[1][m], ActVolts[0][n], ActVolts[1][o], ActVolts[0][p]});
